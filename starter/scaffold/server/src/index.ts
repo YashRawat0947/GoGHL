@@ -294,6 +294,9 @@ app.post('/webhooks/pigeon', express.raw({ type: 'application/json' }), async (r
         { client_ref: data.client_ref },
         { messageId: data.message_id },
       ],
+      ...(data.status === 'sent'
+        ? { status: { $nin: ['delivered', 'failed'] } }
+        : {}),
     },
     { $set: { status: data.status, updatedAt: new Date() } }
   );
